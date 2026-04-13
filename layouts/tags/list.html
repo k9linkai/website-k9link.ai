@@ -1,0 +1,102 @@
+{{ define "main" }}
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-br from-navy to-teal pt-28 pb-16 md:pt-36 md:pb-20 lg:pt-44 lg:pb-24">
+    <div class="container">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-white mb-6">
+          Tag: {{ .Title }}
+        </h1>
+        <p class="text-xl text-white/90 leading-relaxed">
+          {{ .Pages | len }} {{ if eq (.Pages | len) 1 }}post{{ else }}posts{{ end }} with this tag
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Posts -->
+  <div class="bg-light py-6 md:py-12">
+    <div class="container">
+      {{ $paginator := .Paginate (where .Pages "Kind" "page") }}
+      {{ if $paginator.Pages }}
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 justify-items-start">
+          {{ range $page := $paginator.Pages }}
+            <a href="{{ $page.RelPermalink }}" class="group block w-full">
+              <article class="bg-white flex h-full w-full flex-col overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl">
+                {{ with $page.Params.image }}
+                  <div class="aspect-[16/9] overflow-hidden">
+                    {{ partial "components/image-responsive.html" (dict
+                      "src" .
+                      "alt" $page.Title
+                      "class" "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      "sizes" "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      "widths" (slice 640 768 1024)
+                      "loading" "lazy"
+                      "quality" 85
+                      )
+                    }}
+                  </div>
+                {{ else }}
+                  <!-- Placeholder if no image -->
+                  <div class="aspect-[16/9] bg-gradient-to-br from-navy to-teal flex items-center justify-center">
+                    {{ partial "components/icon.html" (dict "name" "shield-halved" "class" "w-24 h-24 text-white/30") }}
+                  </div>
+                {{ end }}
+
+                <div class="flex flex-1 flex-col p-6">
+                  <h2 class="text-2xl font-heading font-semibold text-navy transition-colors group-hover:text-teal">
+                    {{ $page.Title }}
+                  </h2>
+
+                  <p class="mt-4 flex-1 text-gray-600 leading-relaxed">
+                    {{ if $page.Params.summary }}
+                      {{ $page.Params.summary | plainify | truncate 150 }}
+                    {{ else }}
+                      {{ $page.Summary | plainify | truncate 150 }}
+                    {{ end }}
+                  </p>
+
+                  <div class="mt-6 flex items-center gap-2 text-sm text-gray-500">
+                    <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+                      {{ $page.Date.Format "January 2, 2006" }}
+                    </time>
+                  </div>
+                </div>
+              </article>
+            </a>
+          {{ end }}
+        </div>
+
+        <!-- Pagination -->
+        {{ if gt $paginator.TotalPages 1 }}
+        <nav class="flex justify-center items-center gap-2 mt-6 md:mt-12" aria-label="Pagination">
+          {{ if $paginator.HasPrev }}
+          <a href="{{ $paginator.Prev.URL }}" class="px-4 py-2 rounded-lg bg-white text-navy hover:bg-teal hover:text-white transition-colors cursor-pointer shadow-lg hover:shadow-xl">
+            &larr; Previous
+          </a>
+          {{ end }}
+
+          <div class="flex items-center gap-2">
+            {{ range $paginator.Pagers }}
+              {{ if eq . $paginator }}
+                <span class="px-4 py-2 rounded-lg bg-teal text-white font-semibold">{{ .PageNumber }}</span>
+              {{ else }}
+                <a href="{{ .URL }}" class="px-4 py-2 rounded-lg bg-white text-navy hover:bg-teal hover:text-white transition-colors cursor-pointer shadow-lg hover:shadow-xl">{{ .PageNumber }}</a>
+              {{ end }}
+            {{ end }}
+          </div>
+
+          {{ if $paginator.HasNext }}
+          <a href="{{ $paginator.Next.URL }}" class="px-4 py-2 rounded-lg bg-white text-navy hover:bg-teal hover:text-white transition-colors cursor-pointer shadow-lg hover:shadow-xl">
+            Next &rarr;
+          </a>
+          {{ end }}
+        </nav>
+        {{ end }}
+      {{ else }}
+        <div class="text-center py-16">
+          <p class="text-xl text-gray-600">No blog posts with this tag yet.</p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+{{ end }}

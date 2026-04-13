@@ -1,0 +1,26 @@
+{{/*
+  Icon component - loads Font Awesome icons from assets/icons/
+  Usage: {{ partial "components/icon.html" (dict "name" "shield-halved" "class" "w-12 h-12 text-navy" "type" "solid") }}
+*/}}
+{{ $name := .name }}
+{{ $class := .class | default "w-6 h-6" }}
+{{ $type := .type | default "solid" }}
+
+{{/* Remove fa- prefix if present */}}
+{{ $name = strings.TrimPrefix "fa-" $name }}
+
+{{ $iconPath := printf "icons/%s/%s.svg" $type $name }}
+
+{{ with resources.Get $iconPath }}
+  {{ $svg := .Content }}
+  {{/* Remove comments */}}
+  {{ $svg = replaceRE "<!--[^>]*-->" "" $svg }}
+  {{/* Add custom classes to svg element */}}
+  {{ $svg = replace $svg "<svg" (printf "<svg class=\"%s\"" $class) }}
+  {{ $svg | safeHTML }}
+{{ else }}
+  {{/* Fallback if icon not found - show a placeholder */}}
+  <svg class="{{ $class }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor">
+    <rect width="640" height="640" fill="currentColor" opacity="0.1"/>
+  </svg>
+{{ end }}

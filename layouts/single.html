@@ -1,0 +1,24 @@
+{{ define "main" }}
+    {{ partial "blocks/blocks" . }}
+
+    {{ if .Content }}
+      <article class="pt-28 pb-16 md:pt-36 md:pb-20 lg:pt-44 lg:pb-24 bg-[#0a0a0a]">
+        <div class="container">
+          <div class="max-w-4xl mx-auto">
+            <!-- Page Title -->
+            <header class="mb-8">
+              <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ .Title }}</h1>
+              {{ with .Description }}
+                <p class="text-xl text-k9-muted">{{ . }}</p>
+              {{ end }}
+            </header>
+
+            <!-- Content -->
+            <div class="prose prose-lg prose-invert max-w-none">
+              {{ .Content }}
+            </div>
+          </div>
+        </div>
+      </article>
+    {{ end }}
+{{ end }}

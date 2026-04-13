@@ -1,0 +1,16 @@
+{{- $page := .Page -}}
+{{- $name := .Name | default "" -}}
+{{- $name = lower $name -}}
+
+{{- $has := false -}}
+{{- with $page.Params.blocks -}}
+  {{- range . -}}
+    {{- with .block -}}
+      {{- if eq (lower .) $name -}}
+        {{- $has = true -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $has -}}

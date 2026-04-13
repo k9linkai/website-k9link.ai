@@ -1,0 +1,37 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-[#0a0a0a] text-white" }}
+
+<section id="{{ .Params.id | default "specs" }}" class="{{ $background }} py-16 md:py-20 lg:py-24">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-12 lg:mb-16">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 text-white fade-in">{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.subheading }}
+        <p class="text-lg text-k9-muted max-w-2xl mx-auto fade-in">{{ . | markdownify }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Specs Grid -->
+    {{ with .Params.specs }}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        {{ range . }}
+          <div class="card-dark p-6 text-center seq">
+            {{ with .icon }}
+              <div class="w-10 h-10 rounded-lg bg-k9-accent/10 flex items-center justify-center mx-auto mb-3">
+                {{ partial "components/icon.html" (dict "name" . "class" "w-5 h-5 text-k9-accent-light") }}
+              </div>
+            {{ end }}
+            {{ with .label }}
+              <p class="text-sm text-k9-muted mb-1">{{ . }}</p>
+            {{ end }}
+            {{ with .value }}
+              <p class="text-lg font-semibold text-white">{{ . }}</p>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</section>

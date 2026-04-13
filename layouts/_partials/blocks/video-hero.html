@@ -1,0 +1,117 @@
+{{- $videos := .Params.videos -}}
+
+{{/* Critical CSS — beats Tailwind v4 preflight "video{height:auto}" before first paint */}}
+<style>
+  .video-hero-stack{height:100vh!important;height:100dvh!important;background:#000}
+  .video-hero-stack .swiper-slide{height:100vh!important;height:100dvh!important;overflow:hidden;border-radius:0!important}
+  .video-hero-stack .swiper-slide:first-child .expo-container{opacity:0}
+  .video-hero-stack.is-first-slide-ready .swiper-slide:first-child .expo-container{animation:first-slide-fade-in 1s cubic-bezier(.22,1,.36,1) forwards}
+  .video-section__video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;background:#000}
+  @keyframes first-slide-fade-in{
+    from{opacity:0}
+    to{opacity:1}
+  }
+</style>
+
+<div class="video-hero-stack swiper">
+  <div class="swiper-wrapper">
+    {{ range $i, $v := $videos }}
+    <div class="swiper-slide" data-video-section="{{ $i }}" aria-label="{{ $v.heading }}">
+      <div class="expo-container">
+        <video
+          class="expo-image video-section__video"
+          muted
+          playsinline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source src="{{ $v.src }}" type="video/mp4">
+        </video>
+
+        <div class="expo-content">
+          <!-- Gradient overlays for text legibility -->
+          <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/70 pointer-events-none"></div>
+          <div class="absolute inset-0 hero-gradient opacity-40 pointer-events-none"></div>
+
+          <!-- Card (hidden until video ends) -->
+          <div class="video-section__card absolute inset-0 flex items-center justify-center z-10">
+            <div class="card-glass text-center max-w-2xl mx-4">
+              {{ with $v.badge }}
+                <div class="mb-6">
+                  <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-k9-accent/10 text-k9-accent-light border border-k9-accent/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-k9-green animate-pulse"></span>
+                    {{ . }}
+                  </span>
+                </div>
+              {{ end }}
+              {{ if eq $i 0 }}
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text leading-tight">
+                  {{ $v.heading | markdownify }}
+                </h1>
+              {{ else }}
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 gradient-text leading-tight">
+                  {{ $v.heading | markdownify }}
+                </h2>
+              {{ end }}
+              {{ with $v.subheading }}
+                <p class="text-lg md:text-xl lg:text-2xl font-normal text-k9-muted mb-10 max-w-2xl mx-auto">
+                  {{ . | markdownify }}
+                </p>
+              {{ end }}
+              {{ if or $v.cta_text $v.cta_secondary_text }}
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                  {{ with $v.cta_text }}
+                    <a href="{{ $v.cta_url | default "#" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
+                      <span>{{ . }}</span>
+                      <span class="transition-transform duration-300 ease-in-out group-hover:translate-x-1">&rarr;</span>
+                    </a>
+                  {{ end }}
+                  {{ with $v.cta_secondary_text }}
+                    <a href="{{ $v.cta_secondary_url | default "#" }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg bg-transparent text-white border border-white/20 hover:bg-white/5 transition-all duration-200 no-underline cursor-pointer">
+                      {{ . }}
+                    </a>
+                  {{ end }}
+                </div>
+              {{ end }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</div>
+
+<!-- Noscript fallback -->
+<noscript>
+  {{ with index $videos 0 }}
+  <div class="min-h-screen flex items-center justify-center hero-gradient relative">
+    <div class="absolute inset-0 opacity-10 hero-pattern"></div>
+    <div class="container relative z-10 text-center text-white max-w-4xl mx-auto py-20">
+      {{ with .badge }}
+        <div class="mb-6">
+          <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-k9-accent/10 text-k9-accent-light border border-k9-accent/20">
+            {{ . }}
+          </span>
+        </div>
+      {{ end }}
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text leading-tight">
+        {{ .heading | markdownify }}
+      </h1>
+      {{ with .subheading }}
+        <p class="text-lg md:text-xl lg:text-2xl font-normal text-k9-muted mb-10 max-w-2xl mx-auto">
+          {{ . | markdownify }}
+        </p>
+      {{ end }}
+      {{ with .cta_text }}
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="{{ $.cta_url | default "#" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
+            <span>{{ . }}</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+</noscript>

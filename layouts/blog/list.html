@@ -1,0 +1,99 @@
+{{ define "main" }}
+  <!-- Hero Section -->
+  <div class="bg-k9-black pt-28 pb-8 md:pt-36 md:pb-10 lg:pt-44 lg:pb-12">
+    <div class="container">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold gradient-text pb-2 mb-4">Blog</h1>
+        {{ with .Params.description }}
+          <p class="text-xl text-k9-muted leading-relaxed">{{ . }}</p>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Posts -->
+  <div class="bg-k9-black pt-2 pb-6 md:pb-12">
+    <div class="container">
+      {{ $paginator := .Paginate (where .Pages "Kind" "page") }}
+      {{ if $paginator.Pages }}
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 justify-items-start">
+          {{ range $page := $paginator.Pages }}
+            <a href="{{ $page.RelPermalink }}" class="group block w-full">
+              <article class="card-dark flex h-full w-full flex-col overflow-hidden transition-all duration-300">
+                {{ with $page.Params.image }}
+                  <div class="aspect-[16/9] overflow-hidden">
+                    {{ partial "components/image-responsive.html" (dict
+                      "src" .
+                      "alt" $page.Title
+                      "class" "h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      "sizes" "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      "widths" (slice 640 768 1024)
+                      "loading" "lazy"
+                      "quality" 85
+                      )
+                    }}
+                  </div>
+                {{ else }}
+                  <div class="aspect-[16/9] bg-gradient-to-br from-k9-accent/20 to-k9-accent-light/10 flex items-center justify-center">
+                    {{ partial "components/icon.html" (dict "name" "shield-halved" "class" "w-24 h-24 text-k9-accent/20") }}
+                  </div>
+                {{ end }}
+
+                <div class="flex flex-1 flex-col p-6">
+                  <h2 class="text-2xl font-heading font-semibold text-white transition-colors group-hover:text-k9-accent-light">
+                    {{ $page.Title }}
+                  </h2>
+
+                  <p class="mt-4 flex-1 text-k9-muted leading-relaxed">
+                    {{ if $page.Params.summary }}
+                      {{ $page.Params.summary | plainify | truncate 150 }}
+                    {{ else }}
+                      {{ $page.Summary | plainify | truncate 150 }}
+                    {{ end }}
+                  </p>
+
+                  <div class="mt-6 flex items-center gap-2 text-sm text-k9-muted">
+                    <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+                      {{ $page.Date.Format "January 2, 2006" }}
+                    </time>
+                  </div>
+                </div>
+              </article>
+            </a>
+          {{ end }}
+        </div>
+
+        <!-- Pagination -->
+        {{ if gt $paginator.TotalPages 1 }}
+        <nav class="flex justify-center items-center gap-2 mt-6 md:mt-12" aria-label="Pagination">
+          {{ if $paginator.HasPrev }}
+          <a href="{{ $paginator.Prev.URL }}" class="px-4 py-2 rounded-lg bg-k9-card text-white border border-k9-border hover:border-k9-accent/30 transition-colors cursor-pointer">
+            &larr; Previous
+          </a>
+          {{ end }}
+
+          <div class="flex items-center gap-2">
+            {{ range $paginator.Pagers }}
+              {{ if eq . $paginator }}
+                <span class="px-4 py-2 rounded-lg bg-k9-accent text-white font-semibold">{{ .PageNumber }}</span>
+              {{ else }}
+                <a href="{{ .URL }}" class="px-4 py-2 rounded-lg bg-k9-card text-white border border-k9-border hover:border-k9-accent/30 transition-colors cursor-pointer">{{ .PageNumber }}</a>
+              {{ end }}
+            {{ end }}
+          </div>
+
+          {{ if $paginator.HasNext }}
+          <a href="{{ $paginator.Next.URL }}" class="px-4 py-2 rounded-lg bg-k9-card text-white border border-k9-border hover:border-k9-accent/30 transition-colors cursor-pointer">
+            Next &rarr;
+          </a>
+          {{ end }}
+        </nav>
+        {{ end }}
+      {{ else }}
+        <div class="text-center py-16">
+          <p class="text-xl text-k9-muted">No blog posts yet. Check back soon!</p>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+{{ end }}

@@ -1,0 +1,13 @@
+{{ $src := .Destination }}
+{{ $alt := .Text }}
+
+{{/* Use the centralized image-responsive partial for consistent processing */}}
+{{ partial "components/image-responsive.html" (dict
+  "src" $src
+  "alt" $alt
+  "class" "w-full h-auto"
+  "sizes" "(min-width: 896px) 896px, 100vw"
+  "widths" (slice 320 480 640 768 896 1024 1536)
+  "loading" "lazy"
+  "quality" 85
+) }}

@@ -1,0 +1,72 @@
+{{ define "main" }}
+  {{ if .Params.blocks }}
+    <!-- Wrapper for blocks with container for horizontal padding -->
+    <div class="py-8 md:py-12 lg:py-16 bg-white">
+      <div class="container">
+        {{ partial "blocks/blocks" . }}
+      </div>
+    </div>
+  {{ else }}
+    <!-- Spacer for fixed navbar -->
+    <div class="h-20"></div>
+
+    <section class="py-16 md:py-20 lg:py-24 bg-white">
+      <div class="container">
+        <!-- Page Header -->
+        <header class="text-center mb-12">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-light text-center mb-4 text-navy">{{ .Title }}</h1>
+          {{ with .Description }}
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ . }}</p>
+          {{ end }}
+        </header>
+
+        {{ if .Content }}
+          <div class="prose prose-lg mx-auto mb-12">
+            {{ .Content }}
+          </div>
+        {{ end }}
+
+        <!-- List of Pages -->
+        {{ if .Pages }}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {{ range .Pages }}
+              <article class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+                {{ with .Params.featured_image }}
+                  <a href="{{ $.Permalink }}" class="block aspect-video overflow-hidden">
+                    {{ partial "components/image-responsive.html" (dict
+                      "src" .
+                      "alt" $.Title
+                      "class" "w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      "sizes" "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      "widths" (slice 480 640 768 1024)
+                      "loading" "lazy"
+                      "quality" 85
+                      )
+                    }}
+                  </a>
+                {{ end }}
+                <div class="p-6">
+                  <h2 class="text-xl font-semibold text-navy mb-2">
+                    <a href="{{ .Permalink }}" class="hover:text-teal transition-colors">{{ .Title }}</a>
+                  </h2>
+                  {{ with .Description }}
+                    <p class="text-gray-600 mb-4">{{ . | truncate 150 }}</p>
+                  {{ end }}
+                  <a href="{{ .Permalink }}" class="group inline-flex items-center gap-2 text-teal font-medium hover:text-teal-dark transition-colors cursor-pointer">
+                    <span>Read More</span>
+                    <span class="transition-transform duration-300 ease-in-out group-hover:translate-x-1">&rarr;</span>
+                  </a>
+                </div>
+              </article>
+            {{ end }}
+          </div>
+
+          <!-- Pagination -->
+          {{ template "_internal/pagination.html" . }}
+        {{ else }}
+          <p class="text-center text-gray-500">No items found.</p>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

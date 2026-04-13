@@ -1,0 +1,74 @@
+{{ define "main" }}
+
+<div class="bg-k9-black pt-28 md:pt-36">
+  <!-- Hero Image -->
+  {{ with .Params.image }}
+    <div class="container mb-12">
+      <div class="max-w-4xl mx-auto">
+        {{ partial "components/image-responsive.html" (dict
+          "src" .
+          "alt" $.Title
+          "class" "w-full h-auto rounded-lg"
+          "sizes" "(min-width: 896px) 896px, 100vw"
+          "widths" (slice 640 768 896 1024 1536)
+          "loading" "eager"
+          "fetchpriority" "high"
+          "quality" 85
+          )
+        }}
+      </div>
+    </div>
+  {{ else }}
+    <div class="container mb-12">
+      <div class="max-w-4xl mx-auto">
+        <div class="w-full aspect-video bg-gradient-to-br from-k9-accent/20 to-k9-accent-light/10 rounded-lg flex justify-center items-center">
+          {{ partial "components/icon.html" (dict "name" "shield-halved" "class" "w-32 h-32 text-k9-accent/20") }}
+        </div>
+      </div>
+    </div>
+  {{ end }}
+
+  <!-- Article Content -->
+  <div class="container pb-16 md:pb-24">
+    <div class="max-w-4xl mx-auto">
+      <!-- Article Header -->
+      <div class="mb-12 pb-8 border-b border-k9-border">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold gradient-text mb-6">
+          {{ .Title }}
+        </h1>
+
+        {{ with .Description }}
+          <p class="text-xl text-k9-muted leading-relaxed mb-6">{{ . }}</p>
+        {{ end }}
+
+        <div class="flex flex-wrap items-center gap-4 text-sm text-k9-muted">
+          <time datetime="{{ .Date.Format "2006-01-02" }}" class="flex items-center gap-2">
+            {{ partial "components/icon.html" (dict "name" "calendar" "type" "regular" "class" "w-4 h-4") }}{{ .Date.Format "January 2, 2006" }}
+          </time>
+          {{ with .Params.author }}
+            <span class="text-k9-border">•</span>
+            <span class="flex items-center gap-2">{{ partial "components/icon.html" (dict "name" "user" "type" "regular" "class" "w-4 h-4") }}{{ . }}</span>
+          {{ end }}
+          {{ with .ReadingTime }}
+            <span class="text-k9-border">•</span>
+            <span class="flex items-center gap-2">{{ partial "components/icon.html" (dict "name" "clock" "type" "regular" "class" "w-4 h-4") }}{{ . }} min read</span>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- Article Content -->
+      <div class="prose prose-lg prose-invert max-w-none">
+        {{ .Content }}
+      </div>
+
+      <!-- Back to Blog -->
+      <div class="my-12 pt-8 border-t border-k9-border">
+        <a href="/blog" class="inline-flex items-center gap-2 text-k9-accent-light hover:text-white transition-colors font-semibold">
+          {{ partial "components/icon.html" (dict "name" "arrow-left" "class" "w-4 h-4") }}
+          Back to Blog
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

@@ -1,0 +1,44 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-white" }}
+
+<section id="certifications" class="{{ $background }} py-16 md:py-20 lg:py-24">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-12 fade-in">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-center mb-4 text-navy">{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.subheading }}
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ . | markdownify }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Certifications Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {{- $certs := resources.Match "images/company-certs/*" -}}
+      {{- range $certs -}}
+        {{- if not (strings.HasSuffix .Name ".DS_Store") -}}
+          {{ $img := . }}
+          {{ $imgProcessed := $img.Fit "200x200 webp q90" }}
+          <div class="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm seq">
+            <img
+              src="{{ $imgProcessed.RelPermalink }}"
+              alt="Certification badge"
+              width="{{ $imgProcessed.Width }}"
+              height="{{ $imgProcessed.Height }}"
+              loading="lazy"
+              class="max-h-20 w-auto"
+            >
+          </div>
+        {{- end -}}
+      {{- end -}}
+    </div>
+
+    <!-- Additional Text -->
+    {{ with .Params.copy }}
+      <div class="text-center mt-8 fade-in">
+        <p class="text-gray-600">{{ . | markdownify }}</p>
+      </div>
+    {{ end }}
+  </div>
+</section>

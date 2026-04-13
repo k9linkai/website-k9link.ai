@@ -1,0 +1,35 @@
+<section id="{{ .Params.id | default "preorder" }}" class="relative py-16 md:py-20 lg:py-24 overflow-hidden">
+  <!-- Radial glow background -->
+  <div class="absolute inset-0 hero-gradient"></div>
+
+  <div class="container relative z-10">
+    <div class="max-w-2xl mx-auto text-center">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 fade-in">{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.description }}
+        <p class="text-lg text-k9-muted mb-8 fade-in">{{ . | markdownify }}</p>
+      {{ end }}
+
+      <!-- Email Input + Button -->
+      <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto fade-in">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          class="flex-1 px-4 py-3 rounded-lg bg-k9-card border border-k9-border text-white placeholder-k9-muted focus:outline-none focus:border-k9-accent transition-colors"
+          aria-label="Email address"
+        >
+        <button
+          type="button"
+          class="px-6 py-3 rounded-lg bg-k9-accent text-white font-semibold hover:bg-k9-accent-light transition-colors whitespace-nowrap"
+        >
+          {{ .Params.button_text | default "Join Waitlist" }}
+        </button>
+      </div>
+
+      {{ with .Params.note }}
+        <p class="text-sm text-k9-muted mt-4 fade-in">{{ . }}</p>
+      {{ end }}
+    </div>
+  </div>
+</section>

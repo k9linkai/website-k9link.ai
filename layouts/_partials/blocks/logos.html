@@ -1,0 +1,67 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-white" }}
+
+<section class="{{ $background }} py-8 md:py-10 lg:py-12">
+  <div class="w-full">
+    <!-- Section Header -->
+    <div class="text-center mb-12 lg:mb-16 max-w-3xl mx-auto">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-center mb-4 text-navy fade-in">{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.subheading }}
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto fade-in">{{ . | markdownify }}</p>
+      {{ end }}
+    </div>
+
+    <div class="w-full">
+      <div class="text-center">
+        <!-- Logo Carousel animation -->
+        <div class="inline-flex w-full flex-nowrap overflow-hidden">
+          <div class="flex w-max shrink-0 md:shrink animate-infinite-scroll">
+            <ul class="m-0 p-0 list-none flex items-center justify-center md:justify-start gap-12 [&_img]:max-w-none">
+              {{- range $logo := .Params.logo -}}
+                {{- with $logo.image -}}
+                  {{- $imgResource := resources.Get (strings.TrimPrefix "/" .) -}}
+                  {{- if $imgResource -}}
+                    {{- $imgProcessed := $imgResource.Fit "300x120 webp q90" -}}
+                    <li class="flex items-center justify-center">
+                      <img
+                        src="{{ $imgProcessed.RelPermalink }}"
+                        alt="{{ $logo.name }}"
+                        width="{{ $imgProcessed.Width }}"
+                        height="{{ $imgProcessed.Height }}"
+                        loading="lazy"
+                        class="h-24 md:h-32 w-auto object-contain"
+                      />
+                    </li>
+                  {{- end -}}
+                {{- end -}}
+              {{- end -}}
+            </ul>
+            <ul class="m-0 p-0 list-none flex items-center justify-center md:justify-start gap-12 [&_img]:max-w-none" aria-hidden="true">
+              {{- range $logo := .Params.logo -}}
+                {{- with $logo.image -}}
+                  {{- $imgResource := resources.Get (strings.TrimPrefix "/" .) -}}
+                  {{- if $imgResource -}}
+                    {{- $imgProcessed := $imgResource.Fit "300x120 webp q90" -}}
+                    <li class="flex items-center justify-center">
+                      <img
+                        src="{{ $imgProcessed.RelPermalink }}"
+                        alt="{{ $logo.name }}"
+                        width="{{ $imgProcessed.Width }}"
+                        height="{{ $imgProcessed.Height }}"
+                        loading="lazy"
+                        class="h-24 md:h-32 w-auto object-contain"
+                      />
+                    </li>
+                  {{- end -}}
+                {{- end -}}
+              {{- end -}}
+            </ul>
+          </div>
+        </div>
+        <!-- End: Logo Carousel animation -->
+      </div>
+    </div>
+  </div>
+</section>

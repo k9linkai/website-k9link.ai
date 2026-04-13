@@ -1,0 +1,56 @@
+<section id="hero" class="hero-gradient relative min-h-screen flex items-center">
+  <!-- Background Pattern Overlay -->
+  <div class="absolute inset-0 opacity-10 hero-pattern"></div>
+
+  <div class="container relative z-10 py-20 lg:py-0">
+    <div class="max-w-4xl mx-auto text-center text-white">
+      <!-- Badge -->
+      {{ with .Params.badge }}
+        <div class="mb-6 fade-in">
+          <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-k9-accent/10 text-k9-accent-light border border-k9-accent/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-k9-green animate-pulse"></span>
+            {{ . }}
+          </span>
+        </div>
+      {{ end }}
+
+      <!-- Heading -->
+      {{ with .Params.heading }}
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 fade-in gradient-text leading-tight">
+          {{ . | markdownify }}
+        </h1>
+      {{ end }}
+
+      <!-- Subheading -->
+      {{ with .Params.subheading }}
+        <p class="text-lg md:text-xl lg:text-2xl font-normal text-k9-muted mb-10 max-w-2xl mx-auto fade-in">
+          {{ . | markdownify }}
+        </p>
+      {{ end }}
+
+      <!-- CTA Buttons -->
+      {{ if or .Params.cta_text .Params.cta_secondary_text }}
+        <div class="flex flex-col sm:flex-row gap-4 justify-center fade-in">
+          {{ with .Params.cta_text }}
+            <a href="{{ $.Params.cta_url | default "#preorder" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
+              <span>{{ . }}</span>
+              <span class="transition-transform duration-300 ease-in-out group-hover:translate-x-1">&rarr;</span>
+            </a>
+          {{ end }}
+          {{ with .Params.cta_secondary_text }}
+            <a href="{{ $.Params.cta_secondary_url | default "#features" }}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg bg-transparent text-white border border-white/20 hover:bg-white/5 transition-all duration-200 no-underline cursor-pointer">
+              {{ . }}
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white opacity-50 animate-bounce">
+    <a href="#features" class="block" aria-label="Scroll to Features section">
+      {{ partial "components/icon.html" (dict "name" "chevron-down" "class" "w-8 h-8") }}
+    </a>
+  </div>
+</section>

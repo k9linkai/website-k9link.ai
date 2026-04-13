@@ -1,0 +1,17 @@
+<footer class="footer py-8">
+  <div class="container">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Copyright -->
+      <p class="text-sm">
+        &copy; {{ now.Year }} {{ .Site.Params.company_name }}. All rights reserved.
+      </p>
+
+      <!-- Footer Nav -->
+      <nav class="flex items-center gap-6">
+        {{ range .Site.Menus.footer }}
+          <a href="{{ .URL }}" class="text-sm hover:text-white transition-colors">{{ .Name }}</a>
+        {{ end }}
+      </nav>
+    </div>
+  </div>
+</footer>

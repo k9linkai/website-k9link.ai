@@ -1,0 +1,56 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-[#0a0a0a] text-white" }}
+
+<section id="{{ .Params.id | default "features" }}" class="{{ $background }} py-16 md:py-20 lg:py-24">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-12 lg:mb-16">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 text-white fade-in">{{ . }}</h2>
+      {{ end }}
+      {{ with .Params.subheading }}
+        <p class="text-lg text-k9-muted max-w-2xl mx-auto fade-in">{{ . | markdownify }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Services Grid -->
+    {{ with .Params.services }}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{ range $index, $service := . }}
+          <div class="card-dark p-8 seq">
+            <!-- Icon -->
+            {{ with $service.icon }}
+              <div class="mb-6">
+                <div class="w-12 h-12 rounded-lg bg-k9-accent/10 flex items-center justify-center">
+                  {{ partial "components/icon.html" (dict "name" . "class" "w-6 h-6 text-k9-accent-light") }}
+                </div>
+              </div>
+            {{ end }}
+
+            <!-- Title -->
+            {{ with $service.title }}
+              <h3 class="text-xl font-semibold text-white mb-3">{{ . }}</h3>
+            {{ end }}
+
+            <!-- Description -->
+            {{ with $service.description }}
+              <p class="text-k9-muted leading-relaxed mb-6">{{ . | markdownify }}</p>
+            {{ end }}
+
+            <!-- Features List -->
+            {{ with $service.features }}
+              <ul class="space-y-3 mt-6">
+                {{ range . }}
+                  <li class="flex items-start gap-3 text-sm text-k9-text">
+                    {{ partial "components/icon.html" (dict "name" "check" "class" "w-4 h-4 text-k9-green mt-0.5 flex-shrink-0") }}
+                    <span>{{ . }}</span>
+                  </li>
+                {{ end }}
+              </ul>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    {{ end }}
+  </div>
+</section>

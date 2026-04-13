@@ -1,0 +1,12 @@
+<div class="bg-gradient-to-br from-navy to-teal pt-28 pb-16 md:pt-36 md:pb-20 lg:pt-44 lg:pb-24">
+  <div class="container">
+    <div class="max-w-3xl">
+      {{ with .Params.heading }}
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-white mb-6">{{ . }}</h1>
+      {{ end }}
+      {{ with .Params.subheading }}
+        <p class="text-xl text-white/90 leading-relaxed">{{ . }}</p>
+      {{ end }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-white" }}
+
+<section class="{{ $background }} py-16 md:py-20 lg:py-24">
+  <div class="container">
+    <div class="max-w-4xl mx-auto">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-navy mb-6 fade-in">{{ . }}</h2>
+      {{ end }}
+
+      {{ with .Params.copy }}
+        <div class="prose text-gray-600 leading-relaxed mb-8">
+          {{ . | markdownify }}
+        </div>
+      {{ end }}
+
+      {{ with .Params.table }}
+        <div class="overflow-x-auto seq">
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+            {{ with .headers }}
+              <thead class="bg-navy text-white">
+                <tr>
+                  {{ range . }}
+                    <th class="px-6 py-3 text-left">{{ . }}</th>
+                  {{ end }}
+                </tr>
+              </thead>
+            {{ end }}
+
+            {{ with .rows }}
+              <tbody class="divide-y divide-gray-200">
+                {{ range . }}
+                  <tr>
+                    {{ range .cells }}
+                      <td class="px-6 py-4 {{ if .bold }}font-semibold{{ end }}">{{ .value }}</td>
+                    {{ end }}
+                  </tr>
+                {{ end }}
+              </tbody>
+            {{ end }}
+          </table>
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>

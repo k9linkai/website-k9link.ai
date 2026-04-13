@@ -1,0 +1,33 @@
+<style>
+  .home-floating-notice {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .home-floating-notice.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-floating-notice {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<div data-home-floating-notice class="home-floating-notice pointer-events-none fixed bottom-4 left-4 z-40 max-w-[calc(100vw-2rem)] sm:bottom-6 sm:left-6 sm:max-w-[380px]">
+  <aside class="card-glass relative overflow-hidden rounded-3xl text-white shadow-2xl" style="padding: 0; box-shadow: 0 22px 70px rgba(0, 0, 0, 0.55);">
+    <div class="relative flex items-start gap-3 px-[14px] py-3 sm:px-4 sm:py-3">
+      <div class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-k9-accent/35 bg-k9-accent/12 text-sm font-bold text-k9-accent-light" style="box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);">
+        !
+      </div>
+      <p class="text-sm leading-relaxed text-white/88 sm:text-[0.95rem]">
+        <span class="font-semibold text-white">K9Link does NOT include an electrical shock device.</span>
+        Training is reward-based.
+      </p>
+    </div>
+  </aside>
+</div>

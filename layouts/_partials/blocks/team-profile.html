@@ -1,0 +1,52 @@
+{{ $background := partial "blocks/meta/background" .Params.background }}
+{{ $background = $background | default "bg-white" }}
+
+<section class="{{ $background }} py-16 md:py-20 lg:py-24">
+  <div class="container">
+    <div class="max-w-4xl mx-auto">
+      {{ with .Params.heading }}
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-light text-navy mb-12 fade-in">{{ . }}</h2>
+      {{ end }}
+
+      {{ with .Params.members }}
+        <div class="space-y-12">
+          {{ range . }}
+            <div class="seq">
+              {{ with .image }}
+                <div class="mb-6">
+                  {{ partial "components/image-responsive.html" (dict
+                    "src" .
+                    "alt" $.name
+                    "class" "w-48 h-48 rounded-full mx-auto object-cover shadow-lg"
+                    "sizes" "200px"
+                    "widths" (slice 200 400)
+                    "loading" "lazy"
+                    "quality" 90
+                  ) }}
+                </div>
+              {{ end }}
+
+              <h3 class="text-2xl font-semibold text-navy mb-2">{{ .name }}</h3>
+
+              {{ with .title }}
+                <p class="text-lg text-teal font-medium mb-4">{{ . }}</p>
+              {{ end }}
+
+              {{ with .bio }}
+                <div class="prose text-gray-600 leading-relaxed mb-6">
+                  {{ . | markdownify }}
+                </div>
+              {{ end }}
+
+              {{ with .linkedin }}
+                <a href="{{ . }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-teal hover:text-teal-dark transition-colors">
+                  {{ partial "components/icon.html" (dict "name" "linkedin" "type" "brands" "class" "w-5 h-5") }} Connect on LinkedIn
+                </a>
+              {{ end }}
+            </div>
+          {{ end }}
+        </div>
+      {{ end }}
+    </div>
+  </div>
+</section>

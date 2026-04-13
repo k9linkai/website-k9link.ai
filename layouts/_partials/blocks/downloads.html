@@ -1,0 +1,26 @@
+<div class="mb-16 mx-auto max-w-4xl {{ with .Params.top }} py-8 pt-28 md:pt-36 lg:pt-44 {{ end }}">
+   <div class="container">
+  {{ with .Params.heading }}
+  <h2 class="text-4xl font-heading font-bold text-navy mb-8">{{ . }}</h2>
+  {{ end }}
+
+  {{ with .Params.copy }}
+  <p class="text-gray-600 text-lg leading-relaxed mb-8">{{ . | markdownify }}</p>
+  {{ end }}
+
+  {{ with .Params.documents }}
+  <div class="space-y-3">
+    {{ range . }}
+    <a href="{{ .url }}"
+       class="flex items-center justify-between bg-lighter px-6 py-4 hover:bg-gray-200 transition-colors"
+       download>
+      <span class="text-gray-800 font-medium text-lg">{{ .text }}</span>
+      <span class="inline-flex items-center gap-2 text-navy font-medium">
+        {{ partial "components/icon.html" (dict "name" "download" "class" "w-4 h-4") }} Download
+      </span>
+    </a>
+    {{ end }}
+  </div>
+  {{ end }}
+  </div>
+</div>

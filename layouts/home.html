@@ -1,0 +1,14 @@
+{{ define "main" }}
+  {{ partial "blocks/blocks" . }}
+  {{ partial "home-floating-notice.html" . }}
+
+  {{ if .Content }}
+    <div class="section bg-[#0a0a0a]">
+      <div class="container">
+        <div class="prose prose-lg prose-invert mx-auto">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  {{ end }}
+{{ end }}

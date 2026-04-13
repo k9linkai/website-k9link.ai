@@ -1,0 +1,145 @@
+{{ $src := .src }}
+{{ $alt := .alt | default "" }}
+{{ $class := .class | default "" }}
+{{ $sizes := .sizes | default "100vw" }}
+{{ $widths := .widths | default (slice 320 480 640 768 960 1024 1280 1536 1920 2560 3072 3840) }}
+{{ $loading := .loading | default "lazy" }}
+{{ $fetchpriority := .fetchpriority | default "" }}
+{{ $quality := .quality | default 85 }}
+{{ $maxDisplayWidth := .maxDisplayWidth | default 0 }}
+
+{{/* Check file type */}}
+{{ $isSvg := strings.HasSuffix $src ".svg" }}
+{{ $isRemote := or (strings.HasPrefix $src "http://") (strings.HasPrefix $src "https://") }}
+{{ $isWebP := strings.HasSuffix $src ".webp" }}
+
+{{/* Handle remote and SVG images without processing */}}
+{{ if $isRemote }}
+  <img src="{{ $src }}" alt="{{ $alt }}" class="{{ $class }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} />
+{{ else if $isSvg }}
+  {{ with resources.GetMatch $src }}
+    <img src="{{ .RelPermalink }}" alt="{{ $alt }}" class="{{ $class }}" loading="{{ $loading }}"{{ with $fetchpriority }} fetchpriority="{{ . }}"{{ end }} />
+  {{ end }}
+{{ else }}
+  {{/* Process raster images (JPEG, PNG, WebP) */}}
+  {{ with resources.GetMatch $src }}
+    {{ $imageResource := . }}
+
+    {{/* Generate responsive versions at different widths */}}
+    {{ $webpSrcset := slice }}
+    {{ $originalSrcset := slice }}
+
+    {{/* Track if we've added the original size */}}
+    {{ $originalAdded := false }}
+
+    {{/* Process all images including WebP */}}
+    {{ range $widths }}
+        {{ $width := . }}
+        {{ if le $width $imageResource.Width }}
+          {{ if $isWebP }}
+            {{/* Source is WebP - only resize if significantly different from original */}}
+            {{ $tolerance := 50 }}{{/* Only resize if difference is more than 50px */}}
+            {{ $sizeDiff := sub $imageResource.Width $width }}
+            {{ if gt $sizeDiff $tolerance }}
+              {{/* Resize needed - use quality setting */}}
+              {{ $resized := $imageResource.Resize (printf "%dx webp q%d" $width $quality) }}
+              {{ $webpSrcset = $webpSrcset | append (printf "%s %dw" $resized.RelPermalink $resized.Width) }}
+            {{ else }}
+              {{/* Size is close enough - use original to avoid re-encoding */}}
+              {{ $webpSrcset = $webpSrcset | append (printf "%s %dw" $imageResource.RelPermalink $imageResource.Width) }}
+              {{ $originalAdded = true }}
+            {{ end }}
+          {{ else }}
+            {{/* Source is JPEG/PNG - create WebP version */}}
+            {{ $webp := $imageResource.Resize (printf "%dx webp q%d" $width $quality) }}
+            {{ $webpSrcset = $webpSrcset | append (printf "%s %dw" $webp.RelPermalink $webp.Width) }}
+
+            {{/* Create original format version as fallback */}}
+            {{ $resized := $imageResource.Resize (printf "%dx q%d" $width $quality) }}
+            {{ $originalSrcset = $originalSrcset | append (printf "%s %dw" $resized.RelPermalink $resized.Width) }}
+          {{ end }}
+
+          {{/* Mark original as added if this width equals the original */}}
+          {{ if eq $width $imageResource.Width }}
+            {{ $originalAdded = true }}
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{/* Always add the original size if it wasn't already included */}}
+      {{ if not $originalAdded }}
+        {{ if $isWebP }}
+          {{/* For WebP source, use original as-is */}}
+          {{ $webpSrcset = $webpSrcset | append (printf "%s %dw" $imageResource.RelPermalink $imageResource.Width) }}
+        {{ else }}
+          {{/* For other formats, create WebP version of original */}}
+          {{ $webp := $imageResource.Resize (printf "%dx webp q%d" $imageResource.Width $quality) }}
+          {{ $webpSrcset = $webpSrcset | append (printf "%s %dw" $webp.RelPermalink $imageResource.Width) }}
+          {{ $originalSrcset = $originalSrcset | append (printf "%s %dw" $imageResource.RelPermalink $imageResource.Width) }}
+        {{ end }}
+      {{ end }}
+
+    {{/* Determine the largest width from the widths array for width/height attributes */}}
+    {{ $maxWidth := 0 }}
+    {{ range $widths }}
+      {{ if le . $imageResource.Width }}
+        {{ if gt . $maxWidth }}
+          {{ $maxWidth = . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+
+    {{/* If no width from array fits, use original width */}}
+    {{ if eq $maxWidth 0 }}
+      {{ $maxWidth = $imageResource.Width }}
+    {{ end }}
+
+    {{/* Generate src image at appropriate size */}}
+    {{ $srcImage := $imageResource }}
+    {{ $srcWidth := $maxWidth }}
+    {{ $srcHeight := 0 }}
+
+    {{/* If maxDisplayWidth is set and maxWidth exceeds it, resize src to maxDisplayWidth */}}
+    {{ if and (gt $maxDisplayWidth 0) (gt $maxWidth $maxDisplayWidth) }}
+      {{ $srcWidth = $maxDisplayWidth }}
+      {{ if $isWebP }}
+        {{ $srcImage = $imageResource.Resize (printf "%dx webp q%d" $srcWidth $quality) }}
+      {{ else }}
+        {{ $srcImage = $imageResource.Resize (printf "%dx webp q%d" $srcWidth $quality) }}
+      {{ end }}
+    {{ end }}
+
+    {{/* Calculate height based on src image actual dimensions */}}
+    {{ $srcHeight = $srcImage.Height }}
+    {{ $srcWidth = $srcImage.Width }}
+
+    {{/* Output picture element with WebP and fallback */}}
+    <picture>
+      {{/* Modern browsers: WebP format */}}
+      {{ if gt (len $webpSrcset) 0 }}
+        <source
+          type="image/webp"
+          srcset="{{ delimit $webpSrcset ", " }}"
+          sizes="{{ $sizes }}" />
+      {{ end }}
+
+      {{/* Fallback: Original format (JPEG/PNG) */}}
+      {{ if gt (len $originalSrcset) 0 }}
+        <source
+          srcset="{{ delimit $originalSrcset ", " }}"
+          sizes="{{ $sizes }}" />
+      {{ end }}
+
+      {{/* Fallback img element - use processed image as src */}}
+      <img
+        src="{{ $srcImage.RelPermalink }}"
+        alt="{{ $alt }}"
+        class="{{ $class }}"
+        width="{{ $srcWidth }}"
+        height="{{ $srcHeight }}"
+        loading="{{ $loading }}"
+        decoding="async"
+        {{ with $fetchpriority }}fetchpriority="{{ . }}"{{ end }} />
+    </picture>
+  {{ end }}
+{{ end }}

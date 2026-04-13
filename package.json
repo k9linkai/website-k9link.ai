@@ -4,8 +4,8 @@
   "description": "K9Link AI marketing website",
   "private": true,
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/cli": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.2.2"
   }
 }

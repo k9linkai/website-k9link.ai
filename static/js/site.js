@@ -115,6 +115,47 @@
     });
   }
 
+  function initForwardEmailForms() {
+    const forms = qsa("[data-forward-email-form]");
+    if (forms.length === 0) return;
+
+    for (const form of forms) {
+      const input = qs('input[type="email"]', form);
+      if (!input) continue;
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (typeof input.reportValidity === "function" && !input.reportValidity()) return;
+
+        const targetSelector = form.getAttribute("data-signup-target") || "#preorder";
+        const targetSection = document.querySelector(targetSelector);
+        const targetInput = targetSection
+          ? qs("[data-waitlist-email]", targetSection)
+          : qs("[data-waitlist-email]");
+
+        if (targetInput) {
+          targetInput.value = input.value.trim();
+          targetInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        if (navigateToHash(targetSelector, "smooth")) {
+          if (targetInput) {
+            window.setTimeout(() => {
+              targetInput.focus();
+              if (typeof targetInput.setSelectionRange === "function") {
+                const valueLength = targetInput.value.length;
+                targetInput.setSelectionRange(valueLength, valueLength);
+              }
+            }, 450);
+          }
+          return;
+        }
+
+        if (targetInput) targetInput.focus();
+      });
+    }
+  }
+
   function initRevealAnimations() {
     const animatedElements = qsa(".fade-in, .seq");
     if (animatedElements.length === 0) return;
@@ -152,6 +193,7 @@
     initScrollSpy();
     initMobileMenu();
     initSmoothAnchors();
+    initForwardEmailForms();
     initRevealAnimations();
   }
 
@@ -161,4 +203,3 @@
     init();
   }
 })();
-

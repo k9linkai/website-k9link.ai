@@ -58,7 +58,38 @@
                   {{ . | markdownify }}
                 </p>
               {{ end }}
-              {{ if or $v.cta_text $v.cta_secondary_text }}
+              {{ with $v.signup_label }}
+                <div class="max-w-xl mx-auto text-left">
+                  <p class="text-base md:text-lg lg:text-xl font-normal text-k9-muted mb-3">
+                    {{ . }}
+                  </p>
+                  <form
+                    action="{{ $v.signup_target | default "#preorder" }}"
+                    method="get"
+                    class="flex flex-col sm:flex-row gap-3"
+                    data-forward-email-form
+                    data-signup-target="{{ $v.signup_target | default "#preorder" }}"
+                  >
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      class="flex-1 px-4 py-3 rounded-lg bg-k9-card border border-k9-border text-white placeholder-k9-muted focus:outline-none focus:border-k9-accent transition-colors"
+                      aria-label="Email address"
+                      autocomplete="email"
+                      enterkeyhint="send"
+                      required
+                    >
+                    <button
+                      type="submit"
+                      class="px-6 py-3 rounded-lg bg-k9-accent text-white font-semibold hover:bg-k9-accent-light transition-colors whitespace-nowrap cursor-pointer"
+                    >
+                      {{ $v.signup_button_text | default "Join Waitlist" }}
+                    </button>
+                  </form>
+                </div>
+              {{ end }}
+              {{ if and (not $v.signup_label) (or $v.cta_text $v.cta_secondary_text) }}
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                   {{ with $v.cta_text }}
                     <a href="{{ $v.cta_url | default "#" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
@@ -85,10 +116,11 @@
 <!-- Noscript fallback -->
 <noscript>
   {{ with index $videos 0 }}
+  {{ $first := . }}
   <div class="min-h-screen flex items-center justify-center hero-gradient relative">
     <div class="absolute inset-0 opacity-10 hero-pattern"></div>
     <div class="container relative z-10 text-center text-white max-w-4xl mx-auto py-20">
-      {{ with .badge }}
+      {{ with $first.badge }}
         <div class="mb-6">
           <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-k9-accent/10 text-k9-accent-light border border-k9-accent/20">
             {{ . }}
@@ -96,17 +128,42 @@
         </div>
       {{ end }}
       <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text leading-tight">
-        {{ .heading | markdownify }}
+        {{ $first.heading | markdownify }}
       </h1>
-      {{ with .subheading }}
+      {{ with $first.subheading }}
         <p class="text-lg md:text-xl lg:text-2xl font-normal text-k9-muted mb-10 max-w-2xl mx-auto">
           {{ . | markdownify }}
         </p>
       {{ end }}
-      {{ with .cta_text }}
+      {{ with $first.signup_label }}
+        <div class="max-w-xl mx-auto text-left">
+          <p class="text-base md:text-lg lg:text-xl font-normal text-k9-muted mb-3">
+            {{ . }}
+          </p>
+          <form action="{{ $first.signup_target | default "#preorder" }}" method="get" class="flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              class="flex-1 px-4 py-3 rounded-lg bg-k9-card border border-k9-border text-white placeholder-k9-muted focus:outline-none focus:border-k9-accent transition-colors"
+              aria-label="Email address"
+              autocomplete="email"
+              enterkeyhint="send"
+              required
+            >
+            <button
+              type="submit"
+              class="px-6 py-3 rounded-lg bg-k9-accent text-white font-semibold hover:bg-k9-accent-light transition-colors whitespace-nowrap cursor-pointer"
+            >
+              {{ $first.signup_button_text | default "Join Waitlist" }}
+            </button>
+          </form>
+        </div>
+      {{ end }}
+      {{ if and (not $first.signup_label) $first.cta_text }}
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="{{ $.cta_url | default "#" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
-            <span>{{ . }}</span>
+          <a href="{{ $first.cta_url | default "#" }}" class="group inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-semibold rounded-lg bg-k9-accent text-white hover:bg-k9-accent-light transition-all duration-200 no-underline cursor-pointer shadow-lg hover:shadow-xl">
+            <span>{{ $first.cta_text }}</span>
             <span>&rarr;</span>
           </a>
         </div>

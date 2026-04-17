@@ -5,13 +5,11 @@ blocks:
   - block: video-hero
     videos:
       - src: "/video/1.mp4"
-        badge: "Coming Soon — Join the Waitlist"
-        heading: "A Smartphone for Your Dog"
-        subheading: "The world's first AI-powered smart collar with 360° cameras, real-time health monitoring, two-way voice, and intelligent training."
-        cta_text: "Join the Waitlist"
-        cta_url: "#preorder"
-        cta_secondary_text: "See Features"
-        cta_secondary_url: "#features"
+        heading: "AI Dog Collar"
+        subheading: '"K9Link feels like having a professional dog trainer keeping an eye on my dog 24/7. It makes everyday life so much simpler!" - Mariam, Belgian Malinois Owner'
+        signup_label: "Get launch updates:"
+        signup_button_text: "Join Waitlist"
+        signup_target: "#preorder"
       - src: "/video/cafe.mp4"
         heading: "Smart Obedience in Café"
         subheading: "Gentle reinforcement cues help your dog stay calm and well-behaved — at the café, in the park, or on the go."

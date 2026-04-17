@@ -11,20 +11,25 @@ blocks:
         signup_button_text: "Join Waitlist"
         signup_target: "#preorder"
       - src: "/video/cafe.mp4"
-        heading: "Smart Obedience in Café"
-        subheading: "Gentle reinforcement cues help your dog stay calm and well-behaved — at the café, in the park, or on the go."
+        heading: "Real Time Command Obedience Monitoring"
+        subheading: |-
+          In everyday life, dogs often test boundaries when your attention shifts. K9Link continuously detects whether a sustained cue like down or stay is still being held, and responds the moment the dog begins to break it. It first repeats the spoken cue through the collar's speaker and uses subtle LED signals to catch your attention. If that is not enough, K9Link escalates intelligently — with an audible alert when you are nearby, or a phone notification when you are farther away.
       - src: "/video/wrong-sit.mp4"
-        heading: "AI Trainer Assistance"
-        subheading: "When the owner gives unclear or mistimed sit training input, K9Link guides them toward better timing, clearer cues, and a more effective method."
+        heading: "Owner Guidance for Better Training"
+        subheading: |-
+          Teaching a dog is not just about repetition. It depends on using the right method at the right moment. K9Link can guide owners through behaviors like sit step by step, explain the technique through voice, and recognize when the training method being used is ineffective. When something is off, it corrects the owner in real time — helping training become clearer, more consistent, and easier to get right.
       - src: "/video/postman.mp4"
-        heading: "Early Warning for Reactive Behavior"
-        subheading: "As the postman approaches the gate and your dog starts barking, K9Link flags rising reactivity and could use face detection to alert you even sooner next time."
+        heading: "Reactivity Response and Owner Notification"
+        subheading: |-
+          The first signs of reactivity can be easy to miss when your attention is elsewhere. K9Link detects those changes in real time, responds with an audio cue like "Out!," and notifies you at the same time — making earlier intervention possible, especially when you are distracted, farther away, or out of view.
       - src: "/video/boundary-detection.mp4"
-        heading: "AI Escape Detection"
-        subheading: "Senses when your dog is about to bolt and sends an instant alert to your phone — before they make it over the fence."
+        heading: "Predictive Escape Detection"
+        subheading: |-
+          Most collars tell you where your dog is after it has already gone too far. K9Link is designed to notice the moment before that happens. Alongside GPS-based boundary alerts, it can detect when a dog is approaching a fence with the posture and intent to jump, then respond immediately through the collar with an audio cue while notifying the owner's phone at the same time.
       - src: "/video/2.mp4"
-        heading: "See Everything. Know Everything."
-        subheading: "Real-time awareness of your dog's world, health, and happiness."
+        heading: "Owner-Defined Behavior Detection"
+        subheading: |-
+          Many unwanted behaviors happen in the small moments when no one is watching — chewing your shoes or couch, going through the trash, or entering places they should not be. K9Link lets owners teach the collar which behaviors they want to prevent, then detects them in real time and responds immediately. It can play an audio cue through the collar and notify the owner at the same time, turning everyday household problems into behaviors that are easier to catch, correct, and reduce.
       - src: "/video/automated-training.mp4"
         heading: "Automated Reward-Based Training"
         subheading: "The collar leads short command practice sessions and automatically rewards correct behavior, making repetition more consistent and training easier to reinforce."

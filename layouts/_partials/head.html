@@ -35,6 +35,21 @@
 {{ end }}
 
 {{ if (partial "utils/has-block.html" (dict "Page" . "Name" "video-hero")) }}
+  {{ range .Params.blocks }}
+    {{ if eq .block "video-hero" }}
+      {{ with index .videos 0 }}
+        {{ with .poster }}
+          <link rel="preload" as="image" href="{{ . }}">
+        {{ end }}
+        {{ with .mobile_src }}
+          <link rel="preload" as="video" href="{{ . }}" media="(max-width: 767px)" type="video/mp4">
+        {{ end }}
+        {{ with .src }}
+          <link rel="preload" as="video" href="{{ . }}" media="(min-width: 768px)" type="video/mp4">
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/swiper@12.0.3/swiper-bundle.min.js"></script>
   <script defer src="/js/vendor/effect-expo.min.js"></script>

@@ -27,11 +27,10 @@
     let swiper = null;
     let guardedEdgeDirection = 0;
     let edgeGuardUntil = 0;
-    let firstSlideReady = false;
-    let firstSlideRevealQueued = false;
     let floatingNoticeVisible = false;
     let lastSlideReleaseDelta = 0;
     let lastSlideCanRelease = false;
+    let nextSlidePrimed = false;
 
     function now() {
       return window.performance && typeof window.performance.now === "function"
@@ -52,18 +51,6 @@
     function resetLastSlideRelease() {
       lastSlideReleaseDelta = 0;
       lastSlideCanRelease = false;
-    }
-
-    function revealFirstSlide() {
-      if (firstSlideReady || firstSlideRevealQueued) return;
-      firstSlideRevealQueued = true;
-
-      window.requestAnimationFrame(() => {
-        firstSlideRevealQueued = false;
-        if (firstSlideReady) return;
-        firstSlideReady = true;
-        stack.classList.add("is-first-slide-ready");
-      });
     }
 
     function revealFloatingNotice() {
@@ -129,7 +116,6 @@
     });
 
     if (reducedMotion) {
-      revealFirstSlide();
       cards.forEach((c) => { if (c) c.classList.add("is-visible"); });
       window.setTimeout(revealFloatingNotice, 400);
       return;
@@ -167,13 +153,50 @@
       if (cards[index]) cards[index].classList.remove("is-visible");
     }
 
+    function resolveVideoSrc(video) {
+      if (!video) return "";
+      const mobileSrc = video.dataset.mobileSrc || "";
+      const desktopSrc = video.dataset.src || "";
+      if (mobileSrc && window.matchMedia("(max-width: 767px)").matches) return mobileSrc;
+      return desktopSrc;
+    }
+
+    function primeVideo(index, aggressive = false) {
+      const video = videos[index];
+      if (!video) return null;
+
+      const resolvedSrc = resolveVideoSrc(video);
+      if (!resolvedSrc) return video;
+
+      if (aggressive) {
+        video.preload = "auto";
+      } else if (!video.preload || video.preload === "none") {
+        video.preload = "metadata";
+      }
+
+      if (video.dataset.loadedSrc !== resolvedSrc) {
+        video.src = resolvedSrc;
+        video.dataset.loadedSrc = resolvedSrc;
+        video.load();
+      }
+
+      return video;
+    }
+
+    function primeNextSlide(index) {
+      const nextIndex = index + 1;
+      if (nextIndex >= videos.length) return;
+      primeVideo(nextIndex, false);
+    }
+
     // When a video ends -> freeze on last frame, then reveal card
     videos.forEach((video, i) => {
       if (!video) return;
       if (i === 0) {
-        video.addEventListener("playing", revealFirstSlide, { once: true });
         video.addEventListener("loadeddata", () => {
-          window.setTimeout(revealFirstSlide, 120);
+          if (nextSlidePrimed) return;
+          nextSlidePrimed = true;
+          primeNextSlide(0);
         }, { once: true });
       }
       video.addEventListener("ended", () => {
@@ -184,10 +207,15 @@
     });
 
     function activateSlide(index) {
+      const activeVideo = primeVideo(index, true);
+      if (index !== 0) {
+        primeNextSlide(index);
+      }
+
       // Start the new slide's video
-      if (videos[index] && !state[index].played) {
-        try { videos[index].currentTime = 0; } catch (_) {}
-        videos[index].play().catch(() => {});
+      if (activeVideo && !state[index].played) {
+        try { activeVideo.currentTime = 0; } catch (_) {}
+        activeVideo.play().catch(() => {});
       }
 
       // Pause all other videos and reset non-active sections
@@ -206,7 +234,7 @@
         "touchstart",
         () => {
           videos.forEach((v) => {
-            if (v) {
+            if (v && v.dataset.loadedSrc) {
               v.muted = true;
               v.play().then(() => v.pause()).catch(() => {});
             }
@@ -218,7 +246,6 @@
 
     function setup() {
       if (typeof Swiper === "undefined" || typeof EffectExpo === "undefined") {
-        revealFirstSlide();
         activateSlide(0);
         return;
       }
@@ -264,35 +291,8 @@
       });
     }
 
-    // Wait for video metadata then set up
-    const validVideos = videos.filter(Boolean);
-    let loaded = 0;
-    let metaTimeout = 0;
-
-    if (!validVideos.length) { setup(); return; }
-
-    function trySetup() {
-      loaded += 1;
-      if (loaded >= validVideos.length) {
-        window.clearTimeout(metaTimeout);
-        setup();
-      }
-    }
-
-    metaTimeout = window.setTimeout(() => {
-      validVideos.forEach((v) => v.removeEventListener("loadedmetadata", trySetup));
-      setup();
-    }, 8000);
-
-    validVideos.forEach((v) => {
-      if (v.readyState >= 1) {
-        trySetup();
-      } else {
-        v.addEventListener("loadedmetadata", trySetup, { once: true });
-      }
-    });
-
-    if (loaded >= validVideos.length) clearTimeout(metaTimeout);
+    primeVideo(0, true);
+    setup();
   }
 
   if (document.readyState === "loading") {

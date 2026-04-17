@@ -5,6 +5,8 @@ blocks:
   - block: video-hero
     videos:
       - src: "/video/1.mp4"
+        mobile_src: "/video/1-mobile.mp4"
+        poster: "/video/dog-poster.jpg"
         heading: "AI Dog Collar"
         subheading: '"K9Link feels like having a professional dog trainer keeping an eye on my dog 24/7. It makes everyday life so much simpler!" - Mariam, Belgian Malinois Owner'
         signup_label: "Get launch updates:"

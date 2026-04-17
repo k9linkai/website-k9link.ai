@@ -4,13 +4,7 @@
 <style>
   .video-hero-stack{height:100vh!important;height:100dvh!important;background:#000}
   .video-hero-stack .swiper-slide{height:100vh!important;height:100dvh!important;overflow:hidden;border-radius:0!important}
-  .video-hero-stack .swiper-slide:first-child .expo-container{opacity:0}
-  .video-hero-stack.is-first-slide-ready .swiper-slide:first-child .expo-container{animation:first-slide-fade-in 1s cubic-bezier(.22,1,.36,1) forwards}
   .video-section__video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;background:#000}
-  @keyframes first-slide-fade-in{
-    from{opacity:0}
-    to{opacity:1}
-  }
 </style>
 
 <div class="video-hero-stack swiper">
@@ -22,10 +16,12 @@
           class="expo-image video-section__video"
           muted
           playsinline
-          preload="auto"
+          preload="{{ if eq $i 0 }}auto{{ else }}none{{ end }}"
+          {{ with $v.poster }}poster="{{ . }}"{{ end }}
+          data-src="{{ $v.src }}"
+          {{ with $v.mobile_src }}data-mobile-src="{{ . }}"{{ end }}
           aria-hidden="true"
         >
-          <source src="{{ $v.src }}" type="video/mp4">
         </video>
 
         <div class="expo-content">

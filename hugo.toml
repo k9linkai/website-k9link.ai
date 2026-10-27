@@ -33,9 +33,14 @@ url = "/blog/"
 weight = 4
 
 [[menus.main]]
+name = "Documentation"
+pageRef = "/documentation"
+weight = 5
+
+[[menus.main]]
 name = "Pre-Order"
 url = "/#preorder"
-weight = 5
+weight = 6
 
 # Footer menu
 [[menus.footer]]
